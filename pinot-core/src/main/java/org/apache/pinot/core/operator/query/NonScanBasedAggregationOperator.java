@@ -153,17 +153,33 @@ public class NonScanBasedAggregationOperator extends BaseOperator<AggregationRes
   private static Double getMinValue(DataSource dataSource) {
     Dictionary dictionary = dataSource.getDictionary();
     if (dictionary != null) {
-      return toDouble(dictionary.getMinVal());
+      Comparable<?> value = dictionary.getMinVal();
+      if (value == null) {
+        throw new RuntimeException("Min value not stored in metadata for column " + dataSource.getColumnName());
+      }
+      return toDouble(value);
     }
-    return toDouble(dataSource.getDataSourceMetadata().getMinValue());
+    Comparable<?> value = dataSource.getDataSourceMetadata().getMinValue();
+    if (value == null) {
+      throw new RuntimeException("Min value not stored in metadata for column " + dataSource.getColumnName());
+    }
+    return toDouble(value);
   }
 
   private static Double getMaxValue(DataSource dataSource) {
     Dictionary dictionary = dataSource.getDictionary();
     if (dictionary != null) {
-      return toDouble(dictionary.getMaxVal());
+      Comparable<?> value = dictionary.getMaxVal();
+      if (value == null) {
+        throw new RuntimeException("Max value not stored in metadata for column " + dataSource.getColumnName());
+      }
+      return toDouble(value);
     }
-    return toDouble(dataSource.getDataSourceMetadata().getMaxValue());
+    Comparable<?> value = dataSource.getDataSourceMetadata().getMaxValue();
+    if (value == null) {
+      throw new RuntimeException("Max value not stored in metadata for column " + dataSource.getColumnName());
+    }
+    return toDouble(value);
   }
 
   private static Double toDouble(Comparable<?> value) {
