@@ -215,6 +215,7 @@ const QueryPage = () => {
   const [checked, setChecked] = React.useState({
     tracing: queryParam.get('tracing') === 'true',
     useMSE: queryParam.get('useMSE') === 'true',
+    columnarFormat: queryParam.get('columnarFormat') === 'true',
   });
 
   const queryExecuted = React.useRef(false);
@@ -315,6 +316,9 @@ const QueryPage = () => {
     if(checked.useMSE){
       queryOptions.push(`useMultistageEngine=true`);
     }
+    if(checked.columnarFormat){
+      queryOptions.push(`responseFormat=columnar`);
+    }
     const finalQuery = `${query || inputQuery.trim()}`;
     params = JSON.stringify({
       sql: `${finalQuery}`,
@@ -326,6 +330,7 @@ const QueryPage = () => {
       queryParam.set('query', finalQuery);
       queryParam.set('tracing', checked.tracing.toString());
       queryParam.set('useMSE', checked.useMSE.toString());
+      queryParam.set('columnarFormat', checked.columnarFormat.toString());
       if(queryTimeout !== undefined && queryTimeout !== ''){
         queryParam.set('timeout', queryTimeout.toString());
       }
@@ -421,7 +426,8 @@ const QueryPage = () => {
       setInputQuery(query);
       setChecked({
         tracing: queryParam.get('tracing') === 'true',
-        useMSE: queryParam.get('useMse') === 'true'
+        useMSE: queryParam.get('useMSE') === 'true',
+        columnarFormat: queryParam.get('columnarFormat') === 'true',
       });
       setQueryTimeout(Number(queryParam.get('timeout') || '') || '');
       setBoolFlag(!boolFlag);
@@ -575,6 +581,18 @@ const QueryPage = () => {
                 >
                   Run Query
                 </Button>
+              </Grid>
+            </Grid>
+
+            <Grid container className={classes.checkBox}>
+              <Grid item xs={2}>
+                <Checkbox
+                  name="columnarFormat"
+                  color="primary"
+                  onChange={handleChange}
+                  checked={checked.columnarFormat}
+                />
+                Columnar Format
               </Grid>
             </Grid>
 
